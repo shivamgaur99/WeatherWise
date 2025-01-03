@@ -1,58 +1,91 @@
-const inputBox = document.querySelector('.input-box');
-const searchBtn = document.getElementById('searchBtn');
-const weather_img = document.querySelector('.weather-img');
-const temperature = document.querySelector('.temperature');
-const description = document.querySelector('.description');
-const humidity = document.getElementById('humidity');
-const wind_speed = document.getElementById('wind-speed');
+const inputBox = document.querySelector(".input-box");
+const searchBtn = document.getElementById("searchBtn");
+const weather_img = document.querySelector(".weather-img");
+const temperature = document.querySelector(".temperature");
+const description = document.querySelector(".description");
+const humidity = document.getElementById("humidity");
+const wind_speed = document.getElementById("wind-speed");
 
-const location_not_found = document.querySelector('.location-not-found');
+const location_not_found = document.querySelector(".location-not-found");
 
-const weather_body = document.querySelector('.weather-body');
+const weather_body = document.querySelector(".weather-body");
+const imgBg = document.querySelector(".img-bg");
 
 async function checkWeather(city) {
-    const api_key = "6c47fe18c95cff42c36fa5f35aee15a4";
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${api_key}`;
+  const api_key = "6c47fe18c95cff42c36fa5f35aee15a4";
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${api_key}`;
 
-    const weather_data = await fetch(`${url}`).then(response => response.json());
+  const weather_data = await fetch(`${url}`).then((response) =>
+    response.json()
+  );
 
-    if (weather_data.cod === `404`) {
-        location_not_found.style.display = "flex";
-        weather_body.style.display = "none";
-        console.log("error");
-        return;
-    }
+  if (weather_data.cod === `404`) {
+    location_not_found.style.display = "flex";
+    weather_body.style.display = "none";
+    console.log("error");
+    return;
+  }
 
-    console.log("run");
-    location_not_found.style.display = "none";
-    weather_body.style.display = "flex";
-    temperature.innerHTML = `${Math.round(weather_data.main.temp - 273.15)}`;
-    description.innerHTML = `${weather_data.weather[0].description}`;
+  console.log("run");
+  location_not_found.style.display = "none";
+  weather_body.style.display = "flex";
+  temperature.innerHTML = `${Math.round(weather_data.main.temp - 273.15)}°C`;
+  description.innerHTML = `${weather_data.weather[0].description}`;
 
-    humidity.innerHTML = `${weather_data.main.humidity}%`;
-    wind_speed.innerHTML = `${weather_data.wind.speed} m/s`;
+  humidity.innerHTML = `${weather_data.main.humidity}%`;
+  wind_speed.innerHTML = `${weather_data.wind.speed} m/s`;
 
-    switch (weather_data.weather[0].main) {
-        case 'Clouds':
-            weather_img.src = "images/cloud.png";
-            break;
-        case 'Clear':
-            weather_img.src = "images/clear.png";
-            break;
-        case 'Rain':
-            weather_img.src = "images/rain.png";
-            break;
-        case 'Mist':
-            weather_img.src = "images/mist.png";
-            break;
-        case 'Snow':
-            weather_img.src = "images/snow.png";
-            break;
-
-    }
-    console.log(weather_data);
+  switch (weather_data.weather[0].main) {
+    case "Clouds":
+      weather_img.src = "images/cloud.png";
+      changeBackground("cloudy");
+      break;
+    case "Clear":
+      weather_img.src = "images/clear.png";
+      changeBackground("clear");
+      break;
+    case "Rain":
+      weather_img.src = "images/rain.png";
+      changeBackground("rainy");
+      break;
+    case "Mist":
+      weather_img.src = "images/mist.png";
+      changeBackground("misty");
+      break;
+    case "Snow":
+      weather_img.src = "images/snow.png";
+      changeBackground("snowy");
+      break;
+  }
+  console.log(weather_data);
 }
 
-searchBtn.addEventListener('click', () => {
-    checkWeather(inputBox.value);
+function changeBackground(condition) {
+  let bgImage = "";
+
+  switch (condition) {
+    case "clear":
+      bgImage = "images/clear-sky.jpg";
+      break;
+    case "cloudy":
+      bgImage = "images/cloudy.jpg";
+      break;
+    case "rainy":
+      bgImage = "images/rainy.jpg";
+      break;
+    case "misty":
+      bgImage = "images/misty.jpg";
+      break;
+    case "snowy":
+      bgImage = "images/snowy.jpg";
+      break;
+    default:
+      bgImage = "images/default.jpg";
+  }
+
+  imgBg.src = bgImage;
+}
+
+searchBtn.addEventListener("click", () => {
+  checkWeather(inputBox.value);
 });
